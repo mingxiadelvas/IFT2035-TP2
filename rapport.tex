@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[L]{\nom}
+\fancyhead[C]{\devoir}
+\fancyhead[R]{\sigle}
+\fancyfoot[C]{\thepage} 
+\graphicspath{ {./} }
+
+\newcommand{\nom}{Delvas, Riou}
+\newcommand{\devoir}{Rapport TP2}
+\newcommand{\sigle}{IFT2035}
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+\newcommand{\Modd}[1]{\ \mathrm{mod}\ #1}
+
+\begin{document}
+
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\center
+\noindent\\[5cm]
+\textsc{\LARGE Université De Montréal} \\[1cm]
+\HRule \\[0.4cm]
+{ \huge \bfseries IFT2035 : Travail pratique 2 \\[0.15cm] }
+\HRule \\[1.5cm]
+Ming-Xia Delvas : 20104038 \\
+Jade Riou : 20130729
+\\[1cm]
+Vendredi 25 juin 2021
+\end{titlepage}
+
+\newpage
+\section{Introduction}
+Pour effectuer ce TP, nous avons commencé par essayer de lire et comprendre le sujet chacune de notre côté puis nous avons eu une rencontre dans laquelle nous avons échangé sur les différents aspects du devoir pour parfaire notre compréhension de celui-ci. Il était important pour nous de déterminer ensemble les objectifs du travail pour bien cibler tous les concepts nécessaires à sa réalisation.\\
+
+Pour le code, nous avons décidé de commencer par tester et expérimenter séparément puis de mettre en commun nos trouvailles. Malheureusement, ce n'était pas la meilleure méthode, nous nous sommes rapidement rendues compte que cela n'allait pas fonctionner donc nous avons commencé à coder ensemble en s'échangeant nos idées.\\
+
+Dans ce rapport, nous allons détailler les problèmes rencontrés, les choix que nous avons du faire ainsi que les possibilités que nous avons rejetées tout au long du TP.
+
+\section{expand}
+Nous avons commencé par essayer d'implémenter \textit{expand} pour \textit{app}. Au début, nous avions mal compris \textit{expand}, nous travaillions à l'envers en inversant \textit{Ei} et \textit{Eo}. C'est en essayant le cas récursif que nous nous sommes rendues compte du problème. Ainsi, il a été plus simple de comprendre le fonctionnement lorsque X = E comme mentionné dans l'énoncé, car nous voulons appliquer le même type pris en arguments à X.\\
+
+Pour ce qui est du \textit{let(Decls, E)}, nous avons rencontré des problèmes, il y avait $[X = E|Decls]$ dans la définition de $decls$, nous avons donc essayé $expand(decls, E)$ . Toutefois, nous avions une erreur de type $[decls, Decls, E]$. Donc, il a fallu revoir les descriptions de la syntaxe des termes, afin de mieux comprendre ce qui était passé en argument et ce qui était attendu comme type de retour. 
+
+\section{coerce}
+Nous avons rapidement compris que \textit{coerce} permettait de faire la conversion d'un type vers un autre type. Pour implémenter la conversion d'integer à float, nous avons simplement utilisé la fonction \textit{app} de manière à utiliser \textit{int\_to\_float} sur l'expression à convertir. Nous avons fait la même chose pour la conversion d'integer à boolean. \\
+
+Au début, nous avions essayé \textit{coerce(Env, $E_1$, int, float, $E_2$)} mais cela retournait une erreur : \textit{Singleton variables: $[$Env$]$}. Après avoir compris que cela signifiait que \textit{Env} était déclaré mais non utilisé, nous avons simplement remplacé \textit{Env} par \textit{\_}.\\
+
+Un problème rencontré avec \textit{coerce} est que nous avons eu beaucoup de difficultés à comprendre la fonction \textit{forall} et ce que voulait dire $e_3[e_4/x]$. Nous nous questionnions sur le type de retour. Après avoir fait quelques recherches, nous avons compris que $e_3[e_4/x]$ signifie que lors de l'appel de $e_3$, l'argument $x$ est remplacé par $e_4$. Pour ce qui est du \textit{forall}, nous avons regardé sa définition dans le code et ainsi, nous avons pu comprendre ses arguments ainsi que son type de retour.
+
+
+\section{infer}
+Nous avons eu beaucoup de mal à comprendre les règles, car nous étions confuses par le sens des flèches. Nous savions que la signification des flèches avait été expliqué dans la vidéo 'promenade TP1'. Après avoir regarder la vidéo, nos idées sont devenues plus claires et par conséquent, nous savions désormais que la flèche $\Leftarrow$ signifie que nous voulons vérifier que l'expression de gauche a bien le type de droite.Tandis que la flèche $\Rightarrow$ fait référence à l'inférence de l'expression de gauche donnant le type de droite.\\
+
+Pour ce qui est de la flèche $\Rightarrow$ au numérateur, elle signifie que le type de l'expression se trouvant à gauche de la flèche peut être inféré, et ainsi, cela permet de trouver le type de l'expression se trouvant à droite de la flèche. Ici, inférer signifiant analyser le type de retour en fonction des arguments\\
+
+Lors de la complétion du code, nous avons compris que certaines règles de \textit{infer} demandaient de la récursivité. Nous avons eu de la difficulté à comprendre le type de retour lorsque \textit{infer} prenait en argument $x:e_1 \vdash e_2$ et que son retour appelait les fonctions \textit{forall} et \textit{arw}.
+
+\section{check}
+Nous nous sommes longuement questionnées sur les moments où l'utilisation de \textit{check} serait nécessaire. Comme mentionné précédemment, nous avions de la difficulté à bien comprendre comment la fonction check était gérée lorsqu'elle retounait la fonction \textit{forall(X, $E_i$, $E_j$)} appliquée sur différents types et expressions. Cependant, après plusieurs relecture et grâce à la vidéo, nous avons finalement réussi à comprendre le fonctionnement de check et ce que cette fonction était supposée retourner dépendemment des différentes règles.
+
+\section{Conclusion}
+Ce travail pratique se démarquait par un grand nombre d'informations à comprendre et à séparer les unes des autres pour les implémenter de la bonne manière. Ce fût pour nous un très grand défi que nous avons essayé de réussir au mieux que nous pouvions selon nos capacités et connaissances. Travailler sur un projet aussi complexe, nous a permis de mieux comprendre le fonctionnement de Prolog ainsi que de découvrir certaines de ses applications possibles auxquelles nous n'avions pas pensé lors du cours.\\
+
+Un problème qui nous a beaucoup handicapé est le manque d'information lors d'une erreur, contrairement à Haskell qui est très indicatif lorsqu'il trouve une erreur, ce n'est pas le cas pour Prolog.\\
+
+Cela ne nous a pas empêcher d'approfondir nos connaissances sur Prolog. Même si certains sujets avaient déjà été abordé en classe, nous avons dû revoir certains concepts pour faire ce travail. En effet, nous avons dû nous plonger dans l'analyse syntaxique et sémantique de ce langage. Ce travail nous a aussi permis de revoir des concepts tels que les listes et le typage, ainsi que la récursivité, qui est un principe important qui est souvent négligé.\\
+
+Finalement, malgré tous les problèmes et difficultés que nous avons rencontrés, cette expérience nous a apporté un savoir supplémentaire sur un aspect de la programmation qui nous était jusqu'alors inconnu.
+\end{document}
